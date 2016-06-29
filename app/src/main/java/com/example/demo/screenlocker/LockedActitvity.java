@@ -19,11 +19,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.renderscript.Allocation;
-import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,6 +41,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import it.gmariotti.recyclerview.itemanimator.SlideScaleInOutRightItemAnimator;
 
@@ -78,9 +80,7 @@ public class LockedActitvity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new NotifyAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(10));
-        mRecyclerView.setItemAnimator(new SlideScaleInOutRightItemAnimator(mRecyclerView));
-
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(20));
         final ImageView background = (ImageView) findViewById(R.id.back);
         final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.back2);
         background.getViewTreeObserver().addOnPreDrawListener(
@@ -140,7 +140,6 @@ public class LockedActitvity extends AppCompatActivity {
     public void onBackPressed() {
         return;
     }
-
 
     @Override
     protected void onStop() {
@@ -214,16 +213,23 @@ public class LockedActitvity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             NotifyData notifyData = mData.get(position);
-            try {
-                ApplicationInfo appInfo = pm.getApplicationInfo(notifyData.packageName, PackageManager.GET_META_DATA);
-                Drawable applogo = pm.getApplicationIcon(appInfo);
-                holder.icon.setImageDrawable(applogo);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-                holder.icon.setImageResource(notifyData.notification.icon);
-            }
-            holder.content.setText(notifyData.notification.tickerText);
 
+            if(notifyData.notification.contentView!=null){
+                holder.mainView.findViewById(R.id.ly1).setVisibility(View.GONE);
+                RemoteViews remoteViews = notifyData.notification.contentView;
+                View view=remoteViews.apply(LockedActitvity.this,holder.mainView);
+                holder.mainView.addView(view);
+            }else{
+                try {
+                    ApplicationInfo appInfo = pm.getApplicationInfo(notifyData.packageName, PackageManager.GET_META_DATA);
+                    Drawable applogo = pm.getApplicationIcon(appInfo);
+                    holder.icon.setImageDrawable(applogo);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                    holder.icon.setImageResource(notifyData.notification.icon);
+                }
+                holder.content.setText(notifyData.notification.tickerText);
+            }
         }
 
         @Override
@@ -235,11 +241,13 @@ public class LockedActitvity extends AppCompatActivity {
 
             public ImageView icon;
             public TextView content;
+            private CardView mainView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                icon = (ImageView) itemView.findViewById(R.id.notify_icon);
-                content = (TextView) itemView.findViewById(R.id.notify_text);
+                mainView= (CardView) itemView;
+                icon = (ImageView) mainView.findViewById(R.id.notify_icon);
+                content = (TextView) mainView.findViewById(R.id.notify_text);
             }
         }
     }
