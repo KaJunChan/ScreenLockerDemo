@@ -24,7 +24,7 @@
 
         <service android:name=".LockedService"></service>
         <activity
-            android:name=".LockedActitvity"
+            android:name=".LockedActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
