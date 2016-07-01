@@ -1,10 +1,13 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+
+import com.example.demo.screenlocker.receiver.LockedReceiver;
+import com.example.demo.screenlocker.activity.LockedActivity;
 
 /**
  * Created by Administrator on 2016/6/27.

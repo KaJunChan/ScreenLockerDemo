@@ -1,4 +1,4 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.activity;
 
 import android.app.Notification;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.demo.screenlocker.modeldemo.NotifyData;
+import com.example.demo.screenlocker.R;
 
 import java.util.List;
 
@@ -63,7 +66,7 @@ public class NotifyAdapter extends RecyclerView.Adapter<NotifyAdapter.ViewHolder
             public ViewHolder(View itemView) {
                 super(itemView);
                 icon = (ImageView) itemView.findViewById(R.id.notify_icon);
-                content = (TextView) itemView.findViewById(R.id.notify_text);
+                content = (TextView) itemView.findViewById(R.id.notify_content);
             }
         }
     }

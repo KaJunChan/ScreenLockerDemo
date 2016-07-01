@@ -1,4 +1,4 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.modeldemo;
 
 import android.graphics.Bitmap;
 

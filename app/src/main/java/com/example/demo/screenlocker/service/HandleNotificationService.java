@@ -1,12 +1,13 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
-import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+
+import com.example.demo.screenlocker.modeldemo.NotifyData;
 
 import org.greenrobot.eventbus.EventBus;
 

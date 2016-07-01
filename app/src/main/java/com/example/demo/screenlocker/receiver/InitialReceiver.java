@@ -1,10 +1,13 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class InitalReceiver extends BroadcastReceiver {
+import com.example.demo.screenlocker.service.HandleNotificationService;
+import com.example.demo.screenlocker.service.LockedService;
+
+public class InitialReceiver extends BroadcastReceiver {
 
     static final String ACTION = "android.intent.action.BOOT_COMPLETED";
 

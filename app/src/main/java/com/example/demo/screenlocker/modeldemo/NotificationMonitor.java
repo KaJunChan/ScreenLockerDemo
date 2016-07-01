@@ -1,4 +1,4 @@
-package com.example.demo.screenlocker;
+package com.example.demo.screenlocker.modeldemo;
 
 import android.annotation.TargetApi;
 import android.os.Build;

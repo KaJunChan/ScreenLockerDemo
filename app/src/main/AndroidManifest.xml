@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,9 +22,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".LockedService"></service>
+        <service android:name=".service.LockedService"></service>
         <activity
-            android:name=".LockedActivity"
+            android:name=".activity.LockedActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
@@ -36,7 +36,7 @@
         </activity>
 
         <service
-            android:name=".HandleNotificationService"
+            android:name=".service.HandleNotificationService"
             android:enabled="true"
             android:exported="false"
             android:label="NotificationMonitor"
@@ -45,7 +45,7 @@
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
         </service>
-        <receiver android:name=".InitalReceiver">
+        <receiver android:name=".receiver.InitialReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.LAUNCHER" />
