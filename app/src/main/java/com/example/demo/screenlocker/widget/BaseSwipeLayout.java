@@ -19,6 +19,8 @@ public class BaseSwipeLayout extends RelativeLayout {
 
     private View mDragView;
 
+    private int mDragState=0;
+
     private ViewDragHelper mViewDragHelper;
 
     private Point mAutoBackOrignalPoint = new Point();
@@ -28,6 +30,8 @@ public class BaseSwipeLayout extends RelativeLayout {
     private int mCurEdgeFlag = ViewDragHelper.EDGE_LEFT;
 
     private int mSwipeEdge = ViewDragHelper.EDGE_LEFT;
+
+    private boolean isDragedOver=false;
 
     public BaseSwipeLayout(Context context) {
         this(context, null);
@@ -45,7 +49,6 @@ public class BaseSwipeLayout extends RelativeLayout {
     public void setSwipeEdge(int swipeEdge) {
         this.mSwipeEdge = swipeEdge;
     }
-
 
     private void init() {
         mViewDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
@@ -71,7 +74,6 @@ public class BaseSwipeLayout extends RelativeLayout {
             @Override
             public void onViewReleased(View releasedChild, float xvel, float yvel) {
                 super.onViewReleased(releasedChild, xvel, yvel);
-
                 if (mCurArrivePoint.x > getWidth() / 3) {
                     mViewDragHelper.settleCapturedViewAt(getWidth(), mAutoBackOrignalPoint.y);
                 } else {
@@ -85,17 +87,26 @@ public class BaseSwipeLayout extends RelativeLayout {
             @Override
             public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
                 super.onViewPositionChanged(changedView, left, top, dx, dy);
+                isDragedOver=false;
                 switch (mCurEdgeFlag) {
                     case ViewDragHelper.EDGE_LEFT:
                         if (left >= getWidth()) {
-                            if (mDragListener != null) {
-                                mDragListener.complete();
+                            if(mDragState == ViewDragHelper.STATE_SETTLING){
+                                isDragedOver=true;
+                                if (mDragListener != null) {
+                                    mDragListener.complete();
+                                }
                             }
                         }
                         break;
                 }
             }
 
+            @Override
+            public void onViewDragStateChanged(int state) {
+                super.onViewDragStateChanged(state);
+                mDragState=state;
+            }
         });
     }
 
@@ -155,5 +166,19 @@ public class BaseSwipeLayout extends RelativeLayout {
         decorView.removeView(decorChild);
         addView(decorChild);
         decorView.addView(this);
+    }
+
+    public boolean isDragedOver(){
+        return this.isDragedOver;
+    }
+
+    public void autoSettleBack(){
+
+        if(isDragedOver()){
+            boolean isSuccess=mViewDragHelper.smoothSlideViewTo(mDragView,mAutoBackOrignalPoint.x,mAutoBackOrignalPoint.y);
+            mViewDragHelper.continueSettling(true);
+            isDragedOver=false;
+            invalidate();
+        }
     }
 }

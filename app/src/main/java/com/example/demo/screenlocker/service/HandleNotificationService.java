@@ -29,7 +29,6 @@ public class HandleNotificationService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
-        Log.i("info","handlenotification被启动");
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED |
                 AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED |

@@ -8,8 +8,7 @@
     <ImageView
         android:id="@+id/wallpaper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/wraper1" />
+        android:layout_height="match_parent" />
 
     <com.example.demo.screenlocker.widget.BaseSwipeLayout
         android:id="@+id/swipe"

@@ -14,14 +14,11 @@ import com.example.demo.screenlocker.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NotificationManager nm;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nm=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         startService(new Intent(this, LockedService.class));
         startService(new Intent(this, HandleNotificationService.class));
     }
@@ -29,5 +26,10 @@ public class MainActivity extends AppCompatActivity {
     public void onStartNotificationService(View view) {
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, 100);
+    }
+
+    public void onSetUpGustureLock(View view){
+        Intent it=new Intent(this,GustureLockSetupActivity.class);
+        startActivity(it);
     }
 }
