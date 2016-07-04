@@ -38,7 +38,6 @@
             android:layout_alignBottom="@id/notify_icon"
             android:layout_below="@+id/notification_title"
             android:layout_toRightOf="@id/notify_icon"
-            android:padding="2dp"
             android:text="content"
             android:textSize="15sp" />
     </RelativeLayout>

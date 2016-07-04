@@ -17,11 +17,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -115,7 +112,7 @@ public class LockedActivity extends AppCompatActivity {
     public void onTestNotify(View view) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(LockedActivity.this);
         builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText("测试")
+                .setContentText("测试内容")
                 .setTicker("测试标题")
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle("ScreenLocker")
