@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <ImageView
         android:id="@+id/wallpaper"
         android:layout_width="match_parent"
@@ -19,51 +18,68 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="400dp"
-                android:layout_centerInParent="true"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:id="@+id/notificationCenter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </ScrollView>
-
             <eightbitlab.com.blurview.BlurView
                 android:id="@+id/blurview"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:background="@android:color/transparent"
                 app:blurOverlayColor="@color/colorOverlay">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp">
 
-                    <Button
+                    <TextClock
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:onClick="onTestNotify"
-                        android:text="测试发送通知" />
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="10dp"
+                        android:format24Hour="MMMM dd, yyyy h:mm aa"
+                        android:textSize="40sp" />
 
-                    <Button
-                        android:id="@+id/unlockbtn"
+                    <TextView
+                        android:id="@+id/weather"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:onClick="onUnLocked"
-                        android:text="解锁" />
-                </RelativeLayout>
+                        android:textSize="20sp" />
+
+                </LinearLayout>
             </eightbitlab.com.blurview.BlurView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:layout_margin="10dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/notificationCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:onClick="onTestNotify"
+                    android:text="测试发送通知" />
+            </LinearLayout>
         </RelativeLayout>
     </com.example.demo.screenlocker.widget.BaseSwipeLayout>
 </RelativeLayout>

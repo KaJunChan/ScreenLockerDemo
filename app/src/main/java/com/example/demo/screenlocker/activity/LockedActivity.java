@@ -3,12 +3,14 @@ package com.example.demo.screenlocker.activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,10 +18,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
@@ -28,8 +31,13 @@ import android.widget.Toast;
 
 import com.example.demo.screenlocker.modeldemo.NotifyData;
 import com.example.demo.screenlocker.R;
+import com.example.demo.screenlocker.modeldemo.WeatherInfo;
 import com.example.demo.screenlocker.widget.BaseSwipeLayout;
 import com.example.demo.screenlocker.widget.LockPatternView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +50,14 @@ import java.util.Random;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 public class LockedActivity extends AppCompatActivity implements LockPatternView.OnPatternListener {
 
@@ -50,6 +66,7 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
     private ImageView mWallPaper;
     private BaseSwipeLayout mSwipeLayout;
     private LinearLayout mNotificationCenter;
+    private TextView mWeatherTv;
 
     private String[] mImages = {"http://img2.guang.j.cn/thumb/g1/M01/7E/99/wKggKVbUEG3gtFXsAAUkxVsK3wQ28.jpeg_1080x1920x50.jpeg",
             "http://pic1.ipadown.com/imgs/43/oqukm0dgl3t.jpg",
@@ -84,17 +101,17 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
         EventBus.getDefault().register(this);
         nm = (NotificationManager) (getSystemService(NOTIFICATION_SERVICE));
         initView();
-        getWapper();
     }
 
     private void initView() {
         mWallPaper = (ImageView) findViewById(R.id.wallpaper);
+        mWeatherTv = (TextView) findViewById(R.id.weather);
         mSwipeLayout = (BaseSwipeLayout) findViewById(R.id.swipe);
         mSwipeLayout.setOnDragListener(() -> {
             if (isGustureLocked()) {
                 LockedActivity.this.finish();
             } else {
-                bottomDialog();
+                gustureDialog();
             }
         });
 
@@ -105,20 +122,19 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
         final View decorView = getWindow().getDecorView();
         final View rootView = decorView.findViewById(android.R.id.content);
         final Drawable windowBackground = decorView.getBackground();
-        mBlurView.setupWith(rootView).windowBackground(windowBackground).blurAlgorithm(new RenderScriptBlur(this, true)).blurRadius(20f);
-    }
-
-    public void onUnLocked(View view) {
-        finish();
+        mBlurView.setupWith(rootView).windowBackground(windowBackground).blurAlgorithm(new RenderScriptBlur(this, true)).blurRadius(18f);
     }
 
     private int flag = 0;
 
     public void onTestNotify(View view) {
+        RemoteViews remoteViews = new RemoteViews(this.getPackageName(), R.layout.view_notification);
+        remoteViews.setTextViewText(R.id.notification_title, "Title");
+        remoteViews.setTextViewText(R.id.notify_content, "Content");
+        remoteViews.setImageViewBitmap(R.id.notify_icon, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         NotificationCompat.Builder builder = new NotificationCompat.Builder(LockedActivity.this);
         builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText("测试标题")
-                .setTicker("测试内容")
+                .setContent(remoteViews)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle("ScreenLocker")
                 .setWhen(System.currentTimeMillis())
@@ -147,15 +163,35 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
     @Override
     protected void onResume() {
         super.onResume();
+        getWapper();
+        mWallPaper.requestFocus();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mSwipeLayout.autoSettleBack();
-        if(mDialog!=null&& mDialog.isShowing()){
+        if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
+        Weather.getWeatherInfoByCityCode("guangzhou").enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    System.out.println(response.body().toString());
+                    JsonElement element = response.body().get("HeWeather data service 3.0").getAsJsonArray().get(0).getAsJsonObject().get("now");
+                    WeatherInfo info = new Gson().fromJson(element, WeatherInfo.class);
+                    mWeatherTv.setText("Weather :" + info.cond.txt + "\n Templete: " + info.tmp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -178,13 +214,13 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
     }
 
     private void addNotification(NotifyData notifyData) {
-        RemoteViews remoteViews=notifyData.notification.contentView;
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Dp2Px(this, 240f), Dp2Px(this, 128f));
-        View view=null;
-        if(remoteViews!=null){
-            view=remoteViews.apply(this,mNotificationCenter);
-        }else{
-            view=View.inflate(this, R.layout.view_notification, null);
+        RemoteViews remoteViews = notifyData.notification.contentView;
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp2Px(this, 90f));
+        View view = null;
+        if (remoteViews != null) {
+            view = remoteViews.apply(this, mNotificationCenter);
+        } else {
+            view = View.inflate(this, R.layout.view_notification, null);
             ImageView icon = (ImageView) view.findViewById(R.id.notify_icon);
             TextView contentTv = (TextView) view.findViewById(R.id.notify_content);
             TextView titleTv = (TextView) view.findViewById(R.id.notification_title);
@@ -229,12 +265,18 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
 
     private LockPatternView mLockPatternView;
 
-    private void bottomDialog() {
+    private void gustureDialog() {
         View view = View.inflate(this, R.layout.view_gusture_locked, null);
         mLockPatternView = (LockPatternView) view.findViewById(R.id.lock_pattern);
         mLockPatternView.setOnPatternListener(this);
         mDialog = new AlertDialog.Builder(this).setView(view).create();
         mDialog.setCanceledOnTouchOutside(false);
+        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                mSwipeLayout.autoSettleBack();
+            }
+        });
         mDialog.show();
     }
 
@@ -264,5 +306,20 @@ public class LockedActivity extends AppCompatActivity implements LockPatternView
                 Toast.makeText(this, R.string.lockpattern_error, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    //fc5432e95daa818c0f257a82ddea4dd8
+    public final static Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("http://apis.baidu.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+    public final static WeatherApiService Weather = retrofit.create(WeatherApiService.class);
+
+    public interface WeatherApiService {
+        @Headers({
+                "apikey : fc5432e95daa818c0f257a82ddea4dd8"
+        })
+        @GET("/heweather/weather/free")
+        Call<JsonObject> getWeatherInfoByCityCode(@Query("city") String city);
     }
 }

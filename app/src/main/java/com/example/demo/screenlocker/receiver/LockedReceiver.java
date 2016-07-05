@@ -56,13 +56,13 @@ public class LockedReceiver extends BroadcastReceiver {
         if (mContainer == null) {
             mContainer = View.inflate(context, R.layout.activity_locked, null);
 
-            Button unlocked = (Button) mContainer.findViewById(R.id.unlockbtn);
-            unlocked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mWindowManager.removeView(mContainer);
-                }
-            });
+//            Button unlocked = (Button) mContainer.findViewById(R.id.unlockbtn);
+//            unlocked.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    mWindowManager.removeView(mContainer);
+//                }
+//            });
         }
     }
 

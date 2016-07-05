@@ -28,6 +28,7 @@ android {
         targetCompatibility 1.8
         encoding "UTF-8"
     }
+
 }
 
 dependencies {
@@ -42,5 +43,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-
+    compile 'com.squareup.retrofit2:retrofit:2.0.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+    compile 'com.google.code.gson:gson:2.7'
 }

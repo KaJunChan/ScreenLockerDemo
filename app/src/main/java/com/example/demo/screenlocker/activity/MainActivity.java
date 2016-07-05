@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.example.demo.screenlocker.service.HandleNotificationService;
 import com.example.demo.screenlocker.service.LockedService;
@@ -28,8 +29,13 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 100);
     }
 
-    public void onSetUpGustureLock(View view){
-        Intent it=new Intent(this,GustureLockSetupActivity.class);
+    public void onCancelGustureLock(View view) {
+        getSharedPreferences(GustureLockSetupActivity.LOCK, MODE_PRIVATE).edit().clear().commit();
+        Toast.makeText(MainActivity.this, "已取消图案解锁", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSetUpGustureLock(View view) {
+        Intent it = new Intent(this, GustureLockSetupActivity.class);
         startActivity(it);
     }
 }
